@@ -54,22 +54,40 @@ describe("GET /fruits", () => {
     
   });
 
-  it("Should respond with 2 fruits on the body response", async () => {
-    const body = {
-      name: "Banana",
-      price: 5,
-    };
+  it("Should respond with 2 fruits on the body response", async () => {    
 
-    const body2 = {
+    const body = {
       name: "Maçã",
       price: 3,
     };
 
-    await server.post("/fruits").send(body);
-    await server.post("/fruits").send(body2);
+    await server.post("/fruits").send(body);    
 
     const result = await server.get("/fruits")
 
     expect(result.body).toHaveLength(2);
   });  
+});
+
+describe("GET /fruits/:id", () => {
+  it("Should respond with status 404 when searching for a fruit id that does not exist", async () => {
+
+    const result = await server.get("/fruits/3");
+
+    expect(result.status).toBe(404);
+    
+  });
+
+  it("Should respond with 200 and find the following fruits Banana and Maçã on the body response", async () => {    
+
+    const result = await server.get("/fruits/1");
+        
+    expect(result.status).toBe(200);
+
+    expect(result.body).toMatchObject({
+      "id": 1,
+      "name": "Banana",
+      "price": 5
+    });
+  }); 
 });
